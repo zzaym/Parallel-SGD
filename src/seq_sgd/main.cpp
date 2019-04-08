@@ -1,7 +1,7 @@
 #include <iostream>
 #include <random>
 #include "seq_sgd.hpp"
-#include "util.hpp"
+#include "../util.hpp"
 
 // least squares
 // loss = 0.5 * \sum_{i=1}^n r_i^2 = 0.5 * \sum_{i=1}^n (y_i - w^Tx_i)^2
@@ -23,7 +23,6 @@ std::vector<double> obj_grad(const std::vector<double>& weights, \
 					const std::vector< std::vector<double> >& X, \
 					const std::vector<double>& Y) {
 	int n = Y.size();
-	double sum = 0.0;
 	std::vector< std::vector<double> > XT(transpose(X));
 	std::vector<double> r(n);
 	for (int i = 0; i < n; i++)
@@ -33,7 +32,7 @@ std::vector<double> obj_grad(const std::vector<double>& weights, \
 
 
 // generate toy data
-// x_i = i, y_i = 2x_i-1 + eps, eps ~ N(0,1)
+// x_i = i, y_i = 2x_i-1 + eps, eps ~ N(0,0.5)
 void gen_toy_data(std::vector< std::vector<double> >& X, std::vector<double>& Y) {
 	int n = X.size(), d = X[0].size()-1;
 	std::random_device rd; 
@@ -66,10 +65,9 @@ int main() {
 		std::cout << e << " ";
 	std::cout << "]" << std::endl;
 
-    // init optimizer and perform sgd
+	// init optimizer and perform sgd
 	seq_sgd optimizer(&obj, &obj_grad, weights, X, Y, 0.005, 1000);
 	optimizer.update(100);
-	double loss = optimizer.get_loss();
 	weights = optimizer.get_weights();
 
 	// print
