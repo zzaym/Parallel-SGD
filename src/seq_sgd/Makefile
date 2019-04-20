@@ -1,7 +1,6 @@
 CXX = g++
-IDIR = ../
 CXXFLAGS = -Wall -std=c++11
-SRC := main.cpp seq_sgd.cpp ../util.cpp
+SRC := main.cpp seq_sgd.cpp ../matrix.cpp ../obj_function.cpp
 OBJ := $(SRC:%.cpp=%.o)
 
 EXEC = lin_reg

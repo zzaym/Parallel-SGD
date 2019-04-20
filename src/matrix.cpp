@@ -1,5 +1,5 @@
 #include <numeric>
-#include "util.hpp"
+#include "matrix.hpp"
 
 std::vector< std::vector<double> > transpose(const std::vector< std::vector<double> >& matrix) {
 	std::vector< std::vector<double> > out(matrix[0].size(), \

@@ -1,34 +1,7 @@
 #include <iostream>
 #include <random>
 #include "seq_sgd.hpp"
-#include "../util.hpp"
-
-// least squares
-// loss = 0.5 * \sum_{i=1}^n r_i^2 = 0.5 * \sum_{i=1}^n (y_i - w^Tx_i)^2
-double obj(const std::vector<double>& weights, \
-		const std::vector< std::vector<double> >& X, \
-		const std::vector<double>& Y) {
-	double sum = 0.0;
-	for (int i = 0; i < Y.size(); i++) {
-		double r = vec_dot(X[i], weights) - Y[i];
-		sum += r*r;
-	}
-	return 0.5 * sum;
-} 
-
-
-// gradient
-// grad_w = X^T(XW-Y)
-std::vector<double> obj_grad(const std::vector<double>& weights, \
-					const std::vector< std::vector<double> >& X, \
-					const std::vector<double>& Y) {
-	int n = Y.size();
-	std::vector< std::vector<double> > XT(transpose(X));
-	std::vector<double> r(n);
-	for (int i = 0; i < n; i++)
-		r[i] = vec_dot(X[i], weights) - Y[i];
-	return mat_vec_dot(XT, r);
-} 
+#include "../obj_function.hpp"
 
 
 // generate toy data
@@ -66,7 +39,7 @@ int main() {
 	std::cout << "]" << std::endl;
 
 	// init optimizer and perform sgd
-	seq_sgd optimizer(&obj, &obj_grad, weights, X, Y, 0.005, 1000);
+	seq_sgd optimizer(&linear_reg_obj, &linear_reg_obj_grad, weights, X, Y, 0.001, 10000, 10);
 	optimizer.update(100);
 	weights = optimizer.get_weights();
 
@@ -75,6 +48,7 @@ int main() {
 	for (auto& e : weights)
 		std::cout << e << " ";
 	std::cout << "]" << std::endl;
+	std::cout << "loss: " << optimizer.get_loss() << std::endl;
 
 	return 0;
 }
