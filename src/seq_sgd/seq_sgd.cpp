@@ -4,6 +4,7 @@
 
 #include "seq_sgd.hpp"
 #include <iostream>
+#include <algorithm>
 #include <functional> // -std=c++11
 
 // constructor
@@ -22,31 +23,33 @@ seq_sgd::seq_sgd(double (*obj)(const std::vector<double>&, \
 	weights = init_weights;
 	this->lr = lr;
 	this->num_iters = num_iters;
-	this->num_batches = num_batches;
+	m = num_batches;
+	N = X.size();
+	d = X[0].size();
+	b = static_cast<int>(N/m);
 	// may be discarded if no memory
 	this->X = X;
 	this->Y = Y;
 
 	// shuffle indices
-	int N=X.size(), batch_size = static_cast<int>(N/num_batches), d = X[0].size(), index = 0;
 	std::vector<int> indices(N);
-	for (int i = 0; i < N; i++)
+	for (unsigned int i = 0; i < N; i++)
 		indices[i] = i;
 	std::random_shuffle(indices.begin(), indices.end());
 
 	// init batches
-	Xs = std::vector< std::vector< std::vector<double> > >(num_batches, \
-						std::vector< std::vector<double> >(batch_size, std::vector<double>(d)));
-	Ys = std::vector< std::vector<double> >(num_batches, std::vector<double>(batch_size));
-	for (int i = 0; i < num_batches; i++) {
-		for (int j = 0; j < batch_size; j++) {
-			for (int k = 0; k < d; k++) 
+	int index = 0;
+	Xs = std::vector< std::vector< std::vector<double> > >(m, \
+						std::vector< std::vector<double> >(b, std::vector<double>(d)));
+	Ys = std::vector< std::vector<double> >(m, std::vector<double>(b));
+	for (unsigned int i = 0; i < m; i++) {
+		for (unsigned int j = 0; j < b; j++) {
+			for (unsigned int k = 0; k < d; k++) 
 				Xs[i][j][k] = X[indices[index]][k];
 			Ys[i][j] = Y[indices[index]];
 			index++;
 		}
-	}
-	
+	}	
 }
 
 
@@ -58,8 +61,8 @@ seq_sgd::~seq_sgd(){}
 
 
 void seq_sgd::update(const unsigned int print_every) {
-	for (int i = 0; i < num_iters; ++i) {
-		int index = std::rand() % num_batches;
+	for (unsigned int i = 0; i < num_iters; ++i) {
+		int index = std::rand() % m;
 
 		// compute gradient
 		std::vector<double> weights_grad(gradient(weights, Xs[index], Ys[index]));

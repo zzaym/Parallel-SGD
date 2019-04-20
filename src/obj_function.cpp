@@ -8,7 +8,7 @@ double linear_reg_obj(const std::vector<double>& weights, \
 		const std::vector< std::vector<double> >& X, \
 		const std::vector<double>& Y) {
 	double sum = 0.0;
-	for (int i = 0; i < Y.size(); i++) {
+	for (unsigned int i = 0; i < Y.size(); i++) {
 		double r = vec_dot(X[i], weights) - Y[i];
 		sum += r*r;
 	}
@@ -20,10 +20,10 @@ double linear_reg_obj(const std::vector<double>& weights, \
 std::vector<double> linear_reg_obj_grad(const std::vector<double>& weights, \
 					const std::vector< std::vector<double> >& X, \
 					const std::vector<double>& Y) {
-	int n = Y.size();
+	unsigned int n = Y.size();
 	std::vector< std::vector<double> > XT(transpose(X));
 	std::vector<double> r(n);
-	for (int i = 0; i < n; i++)
+	for (unsigned int i = 0; i < n; i++)
 		r[i] = vec_dot(X[i], weights) - Y[i];
 	return mat_vec_dot(XT, r);
 }

@@ -2,6 +2,10 @@
 	Sequential version of SGD
 */
 
+#ifndef SSGD_H
+#define SSGD_H
+
+
 #include <vector>
 
 
@@ -28,7 +32,7 @@ public:
 
 	// functions
 	// perform SGD
-	void update(const unsigned int print_every=0);
+	virtual void update(const unsigned int print_every=0);
 
 	// get weights
 	std::vector<double> get_weights();
@@ -36,14 +40,17 @@ public:
 	// get loss
 	double get_loss();
 
-private:
+protected:
 	// variables
 	std::vector< std::vector< std::vector<double> > > Xs;
 	std::vector< std::vector<double> > Ys;
 	std::vector<double> weights;
 	float lr;
 	unsigned int num_iters;
-	unsigned int num_batches;
+	unsigned int m; // the number of batch
+	unsigned int N; // the number of input samples
+	unsigned int d; // the dims of input
+	unsigned int b; // the batch size
 	double loss;
 	// may be discarded if no memory
 	std::vector< std::vector<double> > X; 
@@ -55,3 +62,5 @@ private:
 	std::vector<double> (*gradient)(const std::vector<double>&, \
 		const std::vector< std::vector<double> >&, const std::vector<double>&);
 };
+
+#endif
