@@ -10,10 +10,10 @@ EXEC = lin_reg
 all: $(EXEC)
 
 $(EXEC): $(OBJ)
-	@$(CXX) $(LDFLAGS) $^ -o $(EXEC)
+    @$(CXX) $(LDFLAGS) $^ -o $(EXEC)
 
 %.o: %.cpp
-	@$(CXX) -c $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS) $< -o $@
+    @$(CXX) -c $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS) $< -o $@
 
 clean:
-	rm -f $(EXEC) $(OBJ)
+    rm -f $(EXEC) $(OBJ)
